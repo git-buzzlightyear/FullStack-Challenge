@@ -64,10 +64,6 @@ export class CompaniesService {
       pageSize,
     } = params;
 
-    console.log('page', typeof page);
-
-    console.log('pageSize', typeof pageSize);
-
     // 1) Build the classic field matches
     const match: any = {};
     if (q) match.$text = { $search: q };

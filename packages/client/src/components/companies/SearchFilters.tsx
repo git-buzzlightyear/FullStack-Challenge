@@ -1,6 +1,6 @@
 // client/src/components/companies/SearchFilters.tsx
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Autocomplete } from '@/components/ui/AutoComplete';
@@ -35,7 +35,6 @@ export function SearchFilters() {
     setOrDel('size', debSize);
     setOrDel('founded', debFounded);
 
-    newParams.set('page', '1');
     setParams(newParams, { replace: true });
   }, [
     debCountry,

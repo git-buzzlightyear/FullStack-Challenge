@@ -12,8 +12,6 @@ export function useCompanies(params: URLSearchParams) {
         if (v !== '') clean[k] = v;
       }
 
-      console.log('clean', clean);
-
       return fetchCompanies(clean);
     },
     staleTime: 60_000,
