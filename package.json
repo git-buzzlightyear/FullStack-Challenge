@@ -6,6 +6,8 @@
   "scripts": {
     "dev":   "pnpm -r --parallel run dev",
 
+    "seed": "pnpm --filter server run seed",
+
     "build": "pnpm -r run build",
 
     "lint":  "pnpm -r --parallel run lint",
