@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
+} from '@nestjs/common';
 import { Company } from './companies.schema';
 import { CompaniesService } from './companies.service.js';
 
@@ -16,7 +23,15 @@ export class CompaniesController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('pageSize', new DefaultValuePipe(20), ParseIntPipe) pageSize = 20,
   ) {
-    return this.svc.search({ q, country, industry, founded, size, page, pageSize });
+    return this.svc.search({
+      q,
+      country,
+      industry,
+      founded,
+      size,
+      page,
+      pageSize,
+    });
   }
 
   @Get('basic-ai-search')
@@ -40,7 +55,7 @@ export class CompaniesController {
   // (C) GET /companies/:id   (frontend polling)
   @Get(':id')
   async getOne(@Param('id') id: string): Promise<Company> {
-    return this.svc.getById(id);   // add a simple method or reuse Mongoose
+    return this.svc.getById(id); // add a simple method or reuse Mongoose
   }
 
   @Get(':id/ensureSummary')

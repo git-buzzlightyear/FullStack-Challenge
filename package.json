@@ -2,12 +2,15 @@
   "name": "full-stack-challenge",
   "private": true,
   "packageManager": "pnpm@10.10.0",
-  "workspaces": [ "packages/*" ],
+  "workspaces": ["packages/*"],
   "scripts": {
     "dev":   "pnpm -r --parallel run dev",
+
     "build": "pnpm -r run build",
-    "lint":  "pnpm exec eslint . --ext .ts,.tsx",
-    "test":  "pnpm -r test"
+
+    "lint":  "pnpm -r --parallel run lint",
+
+    "test":  "pnpm -r --parallel run test"
   },
   "engines": { "node": "22.15.0" }
 }

@@ -46,7 +46,7 @@ const rl = createInterface({
 
 (async () => {
   for await (const raw of rl) {
-    const line = raw.trim().replace(/,$/, '');   // drop trailing commas
+    const line = raw.trim().replace(/,$/, ''); // drop trailing commas
     if (!line) continue;
 
     try {
@@ -57,7 +57,7 @@ const rl = createInterface({
       console.warn(`Skipped malformed line: ${line.slice(0, 80)}…`);
     }
   }
-  await flush();                                  // leftovers
+  await flush(); // leftovers
   console.timeEnd('⏱Total');
   console.log(`\nSeed complete — imported ${total} documents`);
   process.exit(0);

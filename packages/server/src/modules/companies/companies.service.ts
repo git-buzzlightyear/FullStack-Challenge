@@ -27,7 +27,7 @@ interface AISearchParams {
   pageSize: number;
 }
 
-const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
 @Injectable()
 export class CompaniesService {
@@ -47,7 +47,7 @@ export class CompaniesService {
     if (!company.summary) {
       await this.queue.enqueueScrape(companyId);
     }
-    return company;         // return current state (summary may still be null)
+    return company; // return current state (summary may still be null)
   }
 
   /* Basic search with filters like country, industry, founded date, company size and other keywords */
@@ -83,15 +83,15 @@ export class CompaniesService {
     if (founded != null) {
       exprs.push({
         $gte: [
-          { $toInt: '$founded' },   // cast string to number
-          founded,                  // your numeric param
+          { $toInt: '$founded' }, // cast string to number
+          founded, // your numeric param
         ],
       });
     }
 
     // 2b) size ("min-max" or "min+") ranges
     if (size != null) {
-      const parts    = { $split: ['$size', '-'] };
+      const parts = { $split: ['$size', '-'] };
       const lowerStr = { $arrayElemAt: [parts, 0] };
       const upperStr = { $arrayElemAt: [parts, 1] };
 
@@ -110,10 +110,7 @@ export class CompaniesService {
           // if there is no dash → parts.length === 1 → allow all above lower
           // else require: sizeParam <= upperNum
           {
-            $or: [
-              { $eq: [{ $size: parts }, 1] },
-              { $gte: [upperNum, size] },
-            ],
+            $or: [{ $eq: [{ $size: parts }, 1] }, { $gte: [upperNum, size] }],
           },
         ],
       });
@@ -162,17 +159,16 @@ export class CompaniesService {
   /* Basic AI based search with simple prompt */
   async basicAISearch(params: AISearchParams) {
     const { query: prompt, page, pageSize } = params;
-    type CreateParams = Parameters<
-      typeof openai.chat.completions.create
-    >[0];
+    type CreateParams = Parameters<typeof openai.chat.completions.create>[0];
     type MessagesType = CreateParams['messages'];
     const messages: MessagesType = [
       {
-        role: 'system', content:
-        'You are an assistant that converts user search queries into JSON filter objects. ' +
-        'Allowed fields: industry, country, size, founded, keyword. Output only valid JSON.'
+        role: 'system',
+        content:
+          'You are an assistant that converts user search queries into JSON filter objects. ' +
+          'Allowed fields: industry, country, size, founded, keyword. Output only valid JSON.',
       },
-      { role: 'user', content: prompt }
+      { role: 'user', content: prompt },
     ];
 
     const completion = await openai.chat.completions.create({
@@ -183,7 +179,9 @@ export class CompaniesService {
 
     let filters: any = {};
     try {
-      filters = JSON.parse(completion.choices[0].message?.content?.trim() || '{}');
+      filters = JSON.parse(
+        completion.choices[0].message?.content?.trim() || '{}',
+      );
     } catch (err) {
       console.error('Failed to parse AI response as JSON', err);
       throw err;
@@ -202,7 +200,7 @@ export class CompaniesService {
 
     const textMatch = prompt ? { $text: { $search: prompt } } : {};
     const textTotal = await this.companyModel.countDocuments(textMatch);
-    let textDocs = await this.companyModel
+    const textDocs = await this.companyModel
       .find(textMatch, prompt ? { score: { $meta: 'textScore' } } : {})
       .sort(prompt ? { score: { $meta: 'textScore' } } : {})
       .skip((page - 1) * pageSize)
@@ -225,8 +223,8 @@ export class CompaniesService {
     if (domains.length) {
       const dr = domains.map(escapeRegExp).join('|');
       orClauses.push(
-        { website:     { $regex: dr, $options: 'i' } },
-        { linkedin_url:{ $regex: dr, $options: 'i' } },
+        { website: { $regex: dr, $options: 'i' } },
+        { linkedin_url: { $regex: dr, $options: 'i' } },
       );
     }
     if (!orClauses.length) {
@@ -255,8 +253,9 @@ export class CompaniesService {
 
     // total should reflect the union size (approx)
     const totalUnion = new Set(
-      [...Array(textTotal).keys()]
-        .concat([...Array(regexTotal).keys()].map((i) => i + textTotal))
+      [...Array(textTotal).keys()].concat(
+        [...Array(regexTotal).keys()].map((i) => i + textTotal),
+      ),
     ).size;
 
     return wrap(merged, totalUnion, page, pageSize);
@@ -265,12 +264,9 @@ export class CompaniesService {
   /**
    * Fetch a single company by its unique `id` field.
    * Throws 404 if no such company exists.
-  */
+   */
   async getById(id: string): Promise<Company> {
-    const company = await this.companyModel
-      .findOne({ id })
-      .lean()
-      .exec();
+    const company = await this.companyModel.findOne({ id }).lean().exec();
 
     if (!company) {
       throw new Error('Company not found');
@@ -309,7 +305,6 @@ export class CompaniesService {
       names: Array.from(new Set(names)),
     };
   }
-
 }
 
 /** Utility: escape user input for safe RegExp usage */
@@ -317,12 +312,7 @@ function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function wrap<T>(
-  data: T[],
-  total: number,
-  page: number,
-  pageSize: number,
-) {
+function wrap<T>(data: T[], total: number, page: number, pageSize: number) {
   return {
     data,
     total,

@@ -30,7 +30,7 @@ export const CompanySchema = new Schema(
     founded: { type: Number, index: true },
     size: { type: Number, index: true },
     country: { type: String, index: true },
-    summary: { type: String },  // enriched by worker
+    summary: { type: String }, // enriched by worker
   },
   { timestamps: true },
 );

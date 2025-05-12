@@ -25,7 +25,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(env.PORT);
-  // eslint-disable-next-line no-console
+
   console.log(`API ready on http://localhost:${env.PORT}/api`);
 }
 

@@ -10,7 +10,7 @@ import { QueueModule } from '../queue/queue.module.js';
   imports: [
     MongooseModule.forFeature([{ name: 'Company', schema: CompanySchema }]),
     QueueModule,
-    HttpModule
+    HttpModule,
   ],
   controllers: [CompaniesController],
   providers: [CompaniesService],

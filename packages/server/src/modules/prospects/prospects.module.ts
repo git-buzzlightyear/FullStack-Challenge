@@ -7,7 +7,10 @@ import { CompanySchema } from '../companies/companies.schema.js';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'Prospect', schema: ProspectSchema }, { name: 'Company', schema: CompanySchema }]),
+    MongooseModule.forFeature([
+      { name: 'Prospect', schema: ProspectSchema },
+      { name: 'Company', schema: CompanySchema },
+    ]),
   ],
   providers: [ProspectsService],
   controllers: [ProspectsController],
